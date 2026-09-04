@@ -250,7 +250,7 @@ export function SectionHeader({
   description,
   className,
 }: {
-  badge?: string;
+  badge?: React.ReactNode;
   title: string;
   description?: string;
   className?: string;
