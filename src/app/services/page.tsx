@@ -1,125 +1,241 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
-import { useTheme } from "next-themes";
+import { Code, Bot, Brain, Smartphone, ShoppingCart, Cloud, ArrowRight, Check } from "lucide-react";
+
+const services: {
+  id: number;
+  icon: any;
+  title: string;
+  tagline: string;
+  description: string;
+  features: string[];
+  color: string;
+  href: string;
+}[] = [
+  {
+    id: 1,
+    icon: Code,
+    title: "Custom Web Development",
+    tagline: "Build to scale",
+    description: "From landing pages to complex SaaS platforms, we build modern web applications that load fast, rank well, and convert visitors into customers.",
+    features: [
+      "Next.js & React with TypeScript",
+      "Responsive & mobile-first design",
+      "SEO optimized with structured data",
+      "Performance-first architecture",
+      "Secure & scalable infrastructure",
+    ],
+    color: "from-blue-500 to-cyan-500",
+    href: "/contact",
+  },
+  {
+    id: 2,
+    icon: Bot,
+    title: "AI Chatbot Development",
+    tagline: "24/7 intelligent support",
+    description: "Deploy intelligent chatbots trained on your business data. Handle customer queries, qualify leads, and schedule appointments automatically.",
+    features: [
+      "GPT-4 powered conversations",
+      "Trained on your business data",
+      "CRM & calendar integrations",
+      "Multi-language support",
+      "Analytics dashboard",
+    ],
+    color: "from-purple-500 to-pink-500",
+    href: "/ai-solutions",
+  },
+  {
+    id: 3,
+    icon: Brain,
+    title: "Agentic AI Automation",
+    tagline: "Autonomous workflows",
+    description: "Go beyond chatbots. Agentic AI makes decisions, completes multi-step tasks, and optimizes processes without human intervention.",
+    features: [
+      "Autonomous decision-making",
+      "Multi-system orchestration",
+      "Self-improving models",
+      "Enterprise-grade security",
+      "Custom training on your data",
+    ],
+    color: "from-orange-500 to-red-500",
+    href: "/ai-solutions",
+  },
+  {
+    id: 4,
+    icon: Smartphone,
+    title: "Mobile App Development",
+    tagline: "Native & cross-platform",
+    description: "Beautiful, performant mobile apps for iOS and Android. One codebase, two platforms, faster time to market.",
+    features: [
+      "React Native & Flutter",
+      "Native performance",
+      "App Store & Play Store ready",
+      "Push notifications",
+      "Offline-first architecture",
+    ],
+    color: "from-green-500 to-emerald-500",
+    href: "/portfolio",
+  },
+  {
+    id: 5,
+    icon: ShoppingCart,
+    title: "E-commerce Solutions",
+    tagline: "Sell more, smarter",
+    description: "High-converting online stores with AI-powered recommendations, automated inventory, and seamless payment experiences.",
+    features: [
+      "Shopify & custom development",
+      "AI product recommendations",
+      "Multi-currency & payments",
+      "Inventory automation",
+      "Analytics & reporting",
+    ],
+    color: "from-yellow-500 to-orange-500",
+    href: "/contact",
+  },
+  {
+    id: 6,
+    icon: Cloud,
+    title: "DevOps & Cloud",
+    tagline: "Scale without limits",
+    description: "Infrastructure that grows with you. CI/CD pipelines, monitoring, auto-scaling, and 99.9% uptime guaranteed.",
+    features: [
+      "AWS, GCP, Vercel, Railway",
+      "CI/CD automation",
+      "24/7 monitoring",
+      "Auto-scaling infrastructure",
+      "Cost optimization",
+    ],
+    color: "from-indigo-500 to-purple-500",
+    href: "/contact",
+  },
+];
 
 export default function Services() {
-  const services = [
-    {
-      id: 1,
-      title: "Custom Web Development",
-      description: "Tailored websites and web applications built with modern technologies.",
-      features: ["Responsive Design", "Performance Optimized", "SEO Friendly", "Secure"],
-      cta: "Learn More",
-    },
-    {
-      id: 2,
-      title: "AI Chatbot Development",
-      description: "Intelligent conversational agents that understand and respond to your customers.",
-      features: ["Natural Language Processing", "24/7 Support", "Multi-language", "Analytics"],
-      cta: "Explore AI",
-    },
-    {
-      id: 3,
-      title: "Agentic AI Automation",
-      description: "Autonomous AI systems that handle complex business workflows.",
-      features: ["Task Automation", "Decision Making", "Self-learning", "Scalable"],
-      cta: "See Automation",
-    },
-    {
-      id: 4,
-      title: "Mobile App Development",
-      description: "Native and cross-platform mobile applications for iOS and Android.",
-      features: ["Native Performance", "App Store Ready", "Push Notifications", "Offline Support"],
-      cta: "View Portfolio",
-    },
-    {
-      id: 5,
-      title: "E-commerce Solutions",
-      description: "High-converting online stores with seamless payment integrations.",
-      features: ["Secure Payments", "Inventory Management", "Analytics", "Multi-currency"],
-      cta: "Build Store",
-    },
-    {
-      id: 6,
-      title: "DevOps & Cloud Services",
-      description: "Infrastructure automation, CI/CD pipelines, and cloud optimization.",
-      features: ["Scalable Infrastructure", "Zero Downtime", "Monitoring", "Cost Optimization"],
-      cta: "Optimize Now",
-    },
-  ];
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   return (
-    <>
-      <Navbar />
-      <main className="min-h-[calc(100vh-160px)]">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className="py-16 text-center bg-gradient-to-b from-blue-50 to-indigo-100/20 dark:from-blue-900 dark:to-indigo-900/30"
-        >
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-6">
-            Our Services
-          </h1>
-          <p className="text-xl md:text-2xl text-zinc-700 dark:text-zinc-300 max-w-2xl mx-auto">
-            Comprehensive solutions designed to elevate your digital presence and drive business growth.
-          </p>
-        </motion.div>
+    <div className="min-h-screen">
+      <section className="relative py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 via-purple-50/30 to-transparent dark:from-blue-950/50 dark:via-purple-950/30 dark:to-transparent" />
+        
+        <div className="relative mx-auto max-w-7xl px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <span className="inline-block px-4 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 text-sm font-medium mb-4">
+              Our Services
+            </span>
+            <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
+              Everything You Need to
+              <span className="block bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+                Scale Digitally
+              </span>
+            </h1>
+            <p className="text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
+              From a simple website to complex AI automation—we build solutions that drive real business results.
+            </p>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-          className="mx-auto max-w-7xl px-6 py-12"
-        >
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {services.map((service) => (
-              <motion.div
-                key={service.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: service.id * 0.1, ease: "easeOut" }}
-                className="group"
-              >
-                <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-zinc-200 dark:border-zinc-800 hover:shadow-lg transition-all duration-300 hover:-translate-y-2">
-                  <div className="mb-6">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center mb-4">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3a2 2 0 012-2h6.38m-1.88 9.2a1 1 0 001.12 1.12L21.12 17H7l-8 4V10a2 2 0 012-2z" />
-                      </svg>
-                    </div>
-                    <h2 className="text-2xl font-bold text-center">{service.title}</h2>
-                    <p className="mt-4 text-zinc-600 dark:text-zinc-400 text-center">
-                      {service.description}
-                    </p>
-                  </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {services.map((service, i) => {
+              const Icon = service.icon;
+              const isHovered = hoveredId === service.id;
 
-                  <div className="flex flex-wrap gap-2 mt-6">
-                    {service.features.map((feature, index) => (
-                      <span
-                        key={index}
-                        className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-                      >
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
-
-                  <button
-                    className="w-full mt-6 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium py-3 transition-colors hover:from-blue-600 hover:to-purple-700"
+              return (
+                <motion.div
+                  key={service.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  onMouseEnter={() => setHoveredId(service.id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                  className="group relative"
+                >
+                  <div
+                    className={`relative bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-zinc-200 dark:border-zinc-800 transition-all duration-500 ${
+                      isHovered ? "shadow-2xl -translate-y-1" : "shadow-lg"
+                    }`}
                   >
-                    {service.cta}
-                  </button>
-                </div>
-              </motion.div>
-            ))}
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-t-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                    
+                    <div className="flex items-start gap-6">
+                      <div
+                        className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}
+                      >
+                        <Icon className="w-8 h-8 text-white" />
+                      </div>
+                      
+                      <div className="flex-1">
+                        <span className="text-sm text-zinc-500 dark:text-zinc-400">{service.tagline}</span>
+                        <h2 className="text-2xl font-bold mt-1 mb-3">{service.title}</h2>
+                        <p className="text-zinc-600 dark:text-zinc-400 mb-6">
+                          {service.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 mb-6">
+                      {service.features.map((feature, j) => (
+                        <motion.div
+                          key={feature}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: isHovered ? 1 : 0.7, x: 0 }}
+                          transition={{ duration: 0.3, delay: j * 0.05 }}
+                          className="flex items-center gap-3"
+                        >
+                          <div className={`w-5 h-5 rounded-full bg-gradient-to-br ${service.color} flex items-center justify-center flex-shrink-0`}>
+                            <Check className="w-3 h-3 text-white" />
+                          </div>
+                          <span className="text-sm text-zinc-600 dark:text-zinc-400">{feature}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    <Link
+                      href={service.href}
+                      className={`inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r ${service.color} text-white font-medium group-hover:shadow-lg transition-all`}
+                    >
+                      Learn More
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
-        </motion.div>
-      </main>
-      <Footer />
-    </>
+        </div>
+      </section>
+
+      <section className="py-20 bg-zinc-50 dark:bg-zinc-900/50">
+        <div className="mx-auto max-w-4xl px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-6">
+              Not Sure What You Need?
+            </h2>
+            <p className="text-xl text-zinc-600 dark:text-zinc-400 mb-8">
+              Let's talk about your project. Free 15-minute consultation to help you find the right solution.
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold text-lg hover:shadow-xl transition-all"
+            >
+              Book Free Consultation
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+    </div>
   );
 }

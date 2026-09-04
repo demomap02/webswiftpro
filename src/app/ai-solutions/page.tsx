@@ -1,187 +1,291 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { Bot, Brain, Workflow, Puzzle, ArrowRight, Check, ChevronRight, Sparkles } from "lucide-react";
+
+const tabs = [
+  {
+    id: "chatbots",
+    icon: Bot,
+    title: "AI Chatbots",
+    subtitle: "Intelligent Conversational Agents",
+    description: "Deploy GPT-4 powered chatbots that understand your business, handle customer queries 24/7, and never take a vacation.",
+    features: [
+      { name: "Natural Language Understanding", desc: "Understands context, intent, and sentiment" },
+      { name: "Multi-platform Integration", desc: "Works on your website, WhatsApp, Slack, and more" },
+      { name: "CRM & Calendar Sync", desc: "Automatically updates leads and schedules meetings" },
+      { name: "Analytics Dashboard", desc: "Track conversations, sentiment, and ROI" },
+    ],
+    useCases: ["Customer Support", "Lead Qualification", "Appointment Scheduling", "FAQ Automation"],
+    color: "from-blue-500 to-purple-500",
+  },
+  {
+    id: "agentic",
+    icon: Brain,
+    title: "Agentic AI",
+    subtitle: "Autonomous Decision-Making AI",
+    description: "Go beyond chatbots. Agentic AI makes decisions, completes multi-step workflows, and gets smarter over time—all without human intervention.",
+    features: [
+      { name: "Autonomous Task Completion", desc: "Completes complex tasks end-to-end" },
+      { name: "Multi-system Orchestration", desc: "Works across your CRM, email, calendar, and tools" },
+      { name: "Self-improving", desc: "Learns from interactions and improves over time" },
+      { name: "Enterprise Security", desc: "SOC2 compliant, your data stays yours" },
+    ],
+    useCases: ["Lead Scoring", "Report Generation", "Data Entry", "Process Automation"],
+    color: "from-orange-500 to-red-500",
+  },
+  {
+    id: "automation",
+    icon: Workflow,
+    title: "Business Automation",
+    subtitle: "Workflow & Process Automation",
+    description: "Automate repetitive tasks that drain your team's time. From email sequences to data processing—set it once, save hours every week.",
+    features: [
+      { name: "No-code Automation Builder", desc: "Visual workflow builder, no coding needed" },
+      { name: "100+ Integrations", desc: "Connect your favorite tools seamlessly" },
+      { name: "Trigger-based Actions", desc: "Automations fire when specific events happen" },
+      { name: "Real-time Monitoring", desc: "Track every automation's performance" },
+    ],
+    useCases: ["Email Automation", "Data Processing", "Report Generation", "Task Assignment"],
+    color: "from-green-500 to-emerald-500",
+  },
+  {
+    id: "integration",
+    icon: Puzzle,
+    title: "AI Integration",
+    subtitle: "Add AI to Your Existing Tools",
+    description: "Don't rip and replace your systems. We add AI capabilities to your existing CRM, website, app, or internal tools—minimal disruption, maximum impact.",
+    features: [
+      { name: "API-first Approach", desc: "Works with any system via robust APIs" },
+      { name: "Custom Training", desc: "AI trained specifically on your data" },
+      { name: "Gradual Rollout", desc: "Start with one team, expand as you see results" },
+      { name: "Full Support", desc: "Training, documentation, and ongoing help" },
+    ],
+    useCases: ["CRM Enhancement", "Website Chat", "Internal Tools", "Mobile Apps"],
+    color: "from-pink-500 to-rose-500",
+  },
+];
+
+const faqs = [
+  {
+    q: "How long does it take to build an AI chatbot?",
+    a: "A basic chatbot can be live in 1-2 weeks. Complex bots with custom training and integrations typically take 4-8 weeks.",
+  },
+  {
+    q: "Will the AI understand my business context?",
+    a: "Yes. We train the AI on your website, documents, FAQs, and past conversations so it speaks your language—literally.",
+  },
+  {
+    q: "What if the AI gives wrong answers?",
+    a: "We implement guardrails, fallback responses, and human handoff protocols. You can also review and approve responses before going live.",
+  },
+  {
+    q: "How much does it cost?",
+    a: "AI solutions start at ₹50,000 for basic chatbots. Agentic AI and custom automation typically range from ₹1-5 lakhs depending on complexity.",
+  },
+  {
+    q: "Can I try it before committing?",
+    a: "Yes! We offer a free pilot—deploy a basic chatbot on your site for 7 days so you can see the value before full commitment.",
+  },
+];
 
 export default function AISolutions() {
-  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("chatbots");
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const aiFeatures = [
-    {
-      title: "Custom AI Chatbots",
-      description:
-        "We build intelligent chatbots trained on your business data, capable of handling customer support, lead qualification, and appointment scheduling 24/7.",
-      benefits: [
-        "Instant response times",
-        "Multi-language support",
-        "CRM integration",
-        "Analytics dashboard",
-      ],
-    },
-    {
-      title: "Agentic AI Automation",
-      description:
-        "Our agentic AI systems autonomously make decisions, complete tasks, and optimize workflows across your entire business stack without human intervention.",
-      benefits: [
-        "Full task autonomy",
-        "Decision-making capabilities",
-        "Workflow orchestration",
-        "Self-improving models",
-      ],
-    },
-    {
-      title: "Business Process Automation",
-      description:
-        "From lead generation to report generation, we automate repetitive tasks so your team can focus on strategic growth and creative work.",
-      benefits: [
-        "Time savings of up to 70%",
-        "Error reduction",
-        "Cost efficiency",
-        "Scalable workflows",
-      ],
-    },
-    {
-      title: "AI Integration & Customization",
-      description:
-        "We integrate AI capabilities into your existing systems, from CRMs and ERPs to custom internal tools, ensuring seamless operation and maximum ROI.",
-      benefits: [
-        "Seamless integration",
-        "Custom model training",
-        "Data security",
-        "Scalable architecture",
-      ],
-    },
-  ];
-
-  const useCases = [
-    {
-      title: "E-commerce",
-      description:
-        "AI-powered product recommendations, automated customer support, and cart recovery that increases conversion rates.",
-    },
-    {
-      title: "SaaS",
-      description:
-        "User onboarding automation, usage analytics, and personalized feature recommendations for SaaS platforms.",
-    },
-    {
-      title: "Real Estate",
-      description:
-        "Lead qualification, property matching, and 24/7 inquiry handling for real estate agencies.",
-    },
-    {
-      title: "Healthcare",
-      description:
-        "Appointment scheduling, patient queries, and medication reminders with HIPAA-compliant AI solutions.",
-    },
-    {
-      title: "Education",
-      description:
-        "Student support, course recommendations, and automated grading assistance for educational institutions.",
-    },
-  ];
+  const currentTab = tabs.find((t) => t.id === activeTab) || tabs[0];
+  const Icon = currentTab.icon;
 
   return (
-    <>
-      <Navbar />
-      <main className="min-h-[calc(100vh-160px)]">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className="py-16 text-center bg-gradient-to-b from-violet-50 to-purple-100/20 dark:from-violet-900 dark:to-purple-900/30"
-        >
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-6">
-            AI & Automation Solutions
-          </h1>
-          <p className="text-xl md:text-2xl text-zinc-700 dark:text-zinc-300 max-w-2xl mx-auto">
-            Intelligent solutions designed to transform how you do business.
-          </p>
-        </motion.div>
+    <div className="min-h-screen">
+      <section className="relative py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-violet-50/50 via-purple-50/30 to-transparent dark:from-violet-950/50 dark:via-purple-950/30 dark:to-transparent" />
+        
+        <div className="relative mx-auto max-w-7xl px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 text-sm font-medium mb-4">
+              <Sparkles className="w-4 h-4" />
+              AI Solutions
+            </span>
+            <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
+              Intelligence That
+              <span className="block bg-gradient-to-r from-violet-500 to-purple-600 bg-clip-text text-transparent">
+                Works For You
+              </span>
+            </h1>
+            <p className="text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
+              From intelligent chatbots to autonomous workflows—AI solutions designed to save time, reduce costs, and scale your business.
+            </p>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-          className="mx-auto max-w-7xl px-6 py-12"
-        >
-          <h2 className="text-3xl font-bold mb-12 text-center">
-            Our AI Capabilities
-          </h2>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {aiFeatures.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-zinc-200 dark:border-zinc-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-3"
-              >
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center mb-6">
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            {tabs.map((tab) => {
+              const TabIcon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`group relative px-6 py-3 rounded-full font-medium transition-all ${
+                    activeTab === tab.id
+                      ? "bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg"
+                      : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <TabIcon className="w-4 h-4" />
+                    {tab.title}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white dark:bg-zinc-900 rounded-3xl p-8 md:p-12 border border-zinc-200 dark:border-zinc-800 shadow-xl"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${currentTab.color} flex items-center justify-center mb-6`}>
+                    <Icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h2 className="text-3xl font-bold mb-2">{currentTab.title}</h2>
+                  <p className="text-violet-600 dark:text-violet-400 font-medium mb-4">{currentTab.subtitle}</p>
+                  <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
+                    {currentTab.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-2">
+                    {currentTab.useCases.map((uc) => (
+                      <span
+                        key={uc}
+                        className="px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-sm text-zinc-700 dark:text-zinc-300"
+                      >
+                        {uc}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
-                <h3 className="text-xl font-bold mb-4">{feature.title}</h3>
-                <p className="text-zinc-600 dark:text-zinc-400 mb-6">
-                  {feature.description}
-                </p>
-
-                <div className="space-y-2">
-                  {feature.benefits.map((benefit, i) => (
-                    <div key={i} className="flex items-start gap-2">
-                      <svg
-                        className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L12 3l4 4" />
-                      </svg>
-                      <span className="text-zinc-600 dark:text-zinc-400">{benefit}</span>
-                    </div>
+                <div className="space-y-4">
+                  {currentTab.features.map((feature, i) => (
+                    <motion.div
+                      key={feature.name}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      className="flex items-start gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/50"
+                    >
+                      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${currentTab.color} flex items-center justify-center flex-shrink-0`}>
+                        <Check className="w-4 h-4 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold">{feature.name}</h4>
+                        <p className="text-sm text-zinc-600 dark:text-zinc-400">{feature.desc}</p>
+                      </div>
+                    </motion.div>
                   ))}
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </section>
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
-          className="mx-auto max-w-7xl px-6 py-12 bg-gradient-to-b from-indigo-50 to-violet-50 dark:from-indigo-900 dark:to-violet-900"
-        >
-          <h2 className="text-3xl font-bold mb-12 text-center">
-            Industry Use Cases
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-            {useCases.map((useCase, index) => (
+      <section className="py-20">
+        <div className="mx-auto max-w-4xl px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-zinc-600 dark:text-zinc-400">
+              Everything you need to know about our AI solutions.
+            </p>
+          </motion.div>
+
+          <div className="space-y-4">
+            {faqs.map((faq, i) => (
               <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1, ease: "easeOut" }}
-                className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800 hover:shadow-lg transition-all duration-300 hover:-translate-y-2"
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"
               >
-                <div className="w-10 h-10 rounded-md bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mb-4">
-                  <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6v6m4-6v6H4" />
-                  </svg>
-                </div>
-
-                <h3 className="text-xl font-medium mb-3">{useCase.title}</h3>
-                <p className="text-zinc-600 dark:text-zinc-400">{useCase.description}</p>
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between p-6 text-left"
+                >
+                  <span className="font-semibold pr-4">{faq.q}</span>
+                  <ChevronRight
+                    className={`w-5 h-5 text-zinc-400 flex-shrink-0 transition-transform ${
+                      openFaq === i ? "rotate-90" : ""
+                    }`}
+                  />
+                </button>
+                <AnimatePresence>
+                  {openFaq === i && (
+                    <motion.div
+                      initial={{ height: 0 }}
+                      animate={{ height: "auto" }}
+                      exit={{ height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-6 pb-6 text-zinc-600 dark:text-zinc-400">
+                        {faq.a}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             ))}
           </div>
-        </motion.div>
-      </main>
-      <Footer />
-    </>
+        </div>
+      </section>
+
+      <section className="py-20 bg-gradient-to-r from-violet-500 to-purple-600">
+        <div className="mx-auto max-w-4xl px-6 text-center text-white">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-6">
+              Ready to Add AI to Your Business?
+            </h2>
+            <p className="text-xl text-white/90 mb-8">
+              Start with a free 7-day pilot. No commitment, no credit card.
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-violet-600 font-semibold text-lg hover:bg-white/90 transition-all"
+            >
+              Start Free Pilot
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+    </div>
   );
 }
