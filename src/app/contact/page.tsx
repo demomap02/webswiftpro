@@ -7,10 +7,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { organizationJsonLd, breadcrumbJsonLd } from "@/lib/json-ld";
 
-export const metadata = {
-  title: "Contact - WebSwiftPro",
-  description: "Get in touch for your next web project, AI chatbot, or automation needs.",
-};
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);

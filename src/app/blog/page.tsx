@@ -1,13 +1,10 @@
+"use client";
+
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { useTheme } from "next-themes";
 
-export const metadata = {
-  title: "Blog - WebSwiftPro",
-  description:
-    "Insights on AI, web development, automation, and building successful digital products.",
-};
 
 export default function Blog() {
   const { theme } = useTheme();

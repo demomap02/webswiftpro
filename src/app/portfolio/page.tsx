@@ -1,13 +1,11 @@
+"use client";
+
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 
-export const metadata = {
-  title: "Portfolio - WebSwiftPro",
-  description: "Explore our work. From AI chatbots to full-stack web applications.",
-};
 
 export default function Portfolio() {
   const { theme } = useTheme();
