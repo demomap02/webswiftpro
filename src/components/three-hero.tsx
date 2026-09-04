@@ -1,73 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, MeshDistortMaterial, Environment } from "@react-three/drei";
-import * as THREE from "three";
-
-function FloatingShapes() {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const meshRef2 = useRef<THREE.Mesh>(null);
-  const meshRef3 = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    if (meshRef.current) {
-      meshRef.current.rotation.x = t * 0.2;
-      meshRef.current.rotation.y = t * 0.3;
-    }
-    if (meshRef2.current) {
-      meshRef2.current.rotation.x = t * 0.3;
-      meshRef2.current.rotation.z = t * 0.1;
-    }
-    if (meshRef3.current) {
-      meshRef3.current.rotation.y = t * 0.2;
-      meshRef3.current.position.y = Math.sin(t * 0.5) * 0.2;
-    }
-  });
-
-  return (
-    <group>
-      <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-        <mesh ref={meshRef} position={[-2, 0, -1]} scale={0.8}>
-          <icosahedronGeometry args={[1, 0]} />
-          <MeshDistortMaterial
-            color="#6366f1"
-            speed={2}
-            distort={0.4}
-            radius={1}
-          />
-        </mesh>
-      </Float>
-
-      <Float speed={1.5} rotationIntensity={0.5} floatIntensity={1}>
-        <mesh ref={meshRef2} position={[2.5, 0.5, -0.5]} scale={0.6}>
-          <torusGeometry args={[1, 0.4, 16, 100]} />
-          <MeshDistortMaterial
-            color="#8b5cf6"
-            speed={1.5}
-            distort={0.3}
-            radius={1}
-          />
-        </mesh>
-      </Float>
-
-      <Float speed={1} rotationIntensity={0.8} floatIntensity={1.5}>
-        <mesh ref={meshRef3} position={[0, -1, -2]} scale={0.5}>
-          <octahedronGeometry args={[1, 0]} />
-          <MeshDistortMaterial
-            color="#06b6d4"
-            speed={2}
-            distort={0.5}
-            radius={1}
-          />
-        </mesh>
-      </Float>
-
-      <Environment preset="city" />
-    </group>
-  );
-}
+import { useState, useEffect } from "react";
 
 export default function ThreeHero() {
   const [mounted, setMounted] = useState(false);
@@ -85,12 +18,62 @@ export default function ThreeHero() {
   }
 
   return (
-    <div className="absolute inset-0">
-      <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} />
-        <FloatingShapes />
-      </Canvas>
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 animate-gradient-shift" />
+      
+      {/* Floating orbs */}
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl animate-float-1" />
+      <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl animate-float-2" />
+      <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-pink-500/15 rounded-full blur-3xl animate-float-3" />
+      <div className="absolute bottom-1/3 left-1/3 w-56 h-56 bg-cyan-500/15 rounded-full blur-3xl animate-float-4" />
+      
+      {/* Grid pattern overlay */}
+      <div 
+        className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
+        style={{
+          backgroundImage: `linear-gradient(to right, currentColor 1px, transparent 1px),
+                           linear-gradient(to bottom, currentColor 1px, transparent 1px)`,
+          backgroundSize: '50px 50px'
+        }}
+      />
+      
+      {/* Glow effects */}
+      <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-blue-500/30 rounded-full blur-2xl animate-pulse-glow" />
+      <div className="absolute bottom-1/3 left-1/4 w-40 h-40 bg-purple-500/20 rounded-full blur-2xl animate-pulse-glow" style={{ animationDelay: "0.5s" }} />
+      
+      <style jsx>{`
+        @keyframes float-1 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(30px, -30px) scale(1.1); }
+        }
+        @keyframes float-2 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(-40px, 40px) scale(1.05); }
+        }
+        @keyframes float-3 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(20px, 20px) scale(1.1); }
+        }
+        @keyframes float-4 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(-20px, -20px) scale(1.08); }
+        }
+        @keyframes gradient-shift {
+          0%, 100% { opacity: 0.8; }
+          50% { opacity: 1; }
+        }
+        @keyframes pulse-glow {
+          0%, 100% { opacity: 0.3; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        .animate-float-1 { animation: float-1 8s ease-in-out infinite; }
+        .animate-float-2 { animation: float-2 10s ease-in-out infinite; }
+        .animate-float-3 { animation: float-3 7s ease-in-out infinite; }
+        .animate-float-4 { animation: float-4 9s ease-in-out infinite; }
+        .animate-gradient-shift { animation: gradient-shift 6s ease-in-out infinite; }
+        .animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+      `}</style>
     </div>
   );
 }
