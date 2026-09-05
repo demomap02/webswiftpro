@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
 const navLinks = [
@@ -14,8 +15,14 @@ const navLinks = [
   { label: "Contact", href: "/contact" },
 ];
 
+function isActive(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(href + "/");
+}
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname() || "/";
 
   return (
     <nav className="nav">
@@ -30,7 +37,7 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={link.href === "/" ? "active" : ""}
+              className={isActive(pathname, link.href) ? "active" : ""}
             >
               {link.label}
             </Link>
@@ -54,7 +61,12 @@ export function Navbar() {
 
       <div className={`mobile-panel ${isOpen ? "open" : ""}`}>
         {navLinks.map((link) => (
-          <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}>
+          <Link
+            key={link.href}
+            href={link.href}
+            className={isActive(pathname, link.href) ? "active" : ""}
+            onClick={() => setIsOpen(false)}
+          >
             {link.label}
           </Link>
         ))}

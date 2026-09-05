@@ -206,7 +206,7 @@ export default function Aisolutions() {
             <h2>Have a workflow in mind?</h2>
             <p>Describe what you're doing manually today — I'll tell you honestly whether AI can take it off your plate.</p>
             <div className="hero-actions">
-              <Link href="/contact" className="btn btn-primary">
+              <Link href="/contact" className="btn btn-primary" style={{ textDecoration: "none" }}>
                 Get free consultation
               </Link>
             </div>

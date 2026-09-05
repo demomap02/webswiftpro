@@ -1,130 +1,41 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 
 interface BlogPost {
   slug: string;
   title: string;
   excerpt: string;
-  content: string;
   category: string;
   readTime: string;
   date: string;
   author: { name: string; initials: string };
-  tags: string[];
 }
 
 const posts: BlogPost[] = [
-  {
-    slug: "how-ai-chatbots-cut-support-costs-80-percent",
-    title: "How AI Chatbots Are Cutting Customer Support Costs by 80%",
-    excerpt:
-      'Why "just add a chatbot" fails for most teams, and the specific setup that actually moves the resolution-rate needle — training data, escalation rules, and honest limits.',
-    content: "",
-    category: "AI chatbots",
-    readTime: "6 min read",
-    date: "Aug 2026",
-    author: { name: "Aditya Kulkarni", initials: "AK" },
-    tags: ["AI", "Support", "Automation"],
-  },
-  {
-    slug: "nextjs-vs-wordpress-2026",
-    title: "Next.js vs. Traditional WordPress: Which Is Right for Your Business in 2026?",
-    excerpt:
-      "A practical comparison for non-developers — load speed, editing workflow, hosting cost, and which one actually makes sense for a small business site.",
-    content: "",
-    category: "Web development",
-    readTime: "7 min read",
-    date: "Jul 2026",
-    author: { name: "Aditya Kulkarni", initials: "AK" },
-    tags: ["Next.js", "WordPress"],
-  },
-  {
-    slug: "what-is-agentic-ai-practical-guide",
-    title: "What Is Agentic AI? A Practical Guide for Business Owners",
-    excerpt:
-      'Cutting through the buzzword: what makes an "agent" different from a chatbot, what it can safely be trusted to do alone, and where a human should stay in the loop.',
-    content: "",
-    category: "Automation",
-    readTime: "8 min read",
-    date: "Jul 2026",
-    author: { name: "Aditya Kulkarni", initials: "AK" },
-    tags: ["Agentic AI", "Automation"],
-  },
-  {
-    slug: "5-signs-your-business-needs-workflow-automation",
-    title: "5 Signs Your Business Needs Workflow Automation",
-    excerpt:
-      'From "we do this in a spreadsheet every Monday" to "only one person knows how this works" — the tells that a manual process is quietly costing you more than it should.',
-    content: "",
-    category: "Automation",
-    readTime: "5 min read",
-    date: "Jun 2026",
-    author: { name: "Aditya Kulkarni", initials: "AK" },
-    tags: ["Automation", "Workflow"],
-  },
-  {
-    slug: "case-study-gpt4-chatbot-80-percent-support",
-    title: "How We Built a GPT-4 Chatbot That Handles 80% of Support Tickets",
-    excerpt:
-      "Inside the build: how TechStart went from a two-person support team drowning in tickets to an 80% auto-resolution rate — the training data, the escalation logic, and what we'd do differently.",
-    content: "",
-    category: "Case study",
-    readTime: "9 min read",
-    date: "Aug 2026",
-    author: { name: "Aditya Kulkarni", initials: "AK" },
-    tags: ["Case Study", "Chatbots", "GPT-4"],
-  },
-  {
-    slug: "freelancer-vs-agency-cost-2026",
-    title: "The True Cost of Hiring a Freelancer vs. an Agency in 2026",
-    excerpt:
-      "A line-by-line breakdown of where agency budgets actually go, and when paying for that overhead is genuinely worth it — and when it isn't.",
-    content: "",
-    category: "Web development",
-    readTime: "6 min read",
-    date: "Jun 2026",
-    author: { name: "Aditya Kulkarni", initials: "AK" },
-    tags: ["Freelancer", "Agency"],
-  },
-  {
-    slug: "ai-automation-tools-we-use",
-    title: "AI Automation Tools We Actually Use (And Recommend) in Our Projects",
-    excerpt:
-      "No affiliate-link listicle — the specific tools in our stack for orchestration, monitoring, and integrations, and why we picked each one.",
-    content: "",
-    category: "Automation",
-    readTime: "7 min read",
-    date: "May 2026",
-    author: { name: "Aditya Kulkarni", initials: "AK" },
-    tags: ["Tools", "Automation"],
-  },
-  {
-    slug: "2-4-week-web-dev-process",
-    title: "From Idea to Launch: Our 2-4 Week Web Development Process Explained",
-    excerpt:
-      "What actually happens in each week of a build — discovery, design, development, and launch — so you know what to expect before you sign anything.",
-    content: "",
-    category: "Web development",
-    readTime: "6 min read",
-    date: "May 2026",
-    author: { name: "Aditya Kulkarni", initials: "AK" },
-    tags: ["Process", "Web Development"],
-  },
+  { slug: "how-ai-chatbots-cut-support-costs-80-percent", title: "How AI Chatbots Are Cutting Customer Support Costs by 80%", excerpt: 'Why "just add a chatbot" fails for most teams, and the specific setup that actually moves the resolution-rate needle — training data, escalation rules, and honest limits.', category: "AI chatbots", readTime: "6 min read", date: "Aug 2026", author: { name: "Aditya Kulkarni", initials: "AK" } },
+  { slug: "nextjs-vs-wordpress-2026", title: "Next.js vs. Traditional WordPress: Which Is Right for Your Business in 2026?", excerpt: "A practical comparison for non-developers — load speed, editing workflow, hosting cost, and which one actually makes sense for a small business site.", category: "Web development", readTime: "7 min read", date: "Jul 2026", author: { name: "Aditya Kulkarni", initials: "AK" } },
+  { slug: "what-is-agentic-ai-practical-guide", title: "What Is Agentic AI? A Practical Guide for Business Owners", excerpt: 'Cutting through the buzzword: what makes an "agent" different from a chatbot, what it can safely be trusted to do alone, and where a human should stay in the loop.', category: "Automation", readTime: "8 min read", date: "Jul 2026", author: { name: "Aditya Kulkarni", initials: "AK" } },
+  { slug: "5-signs-your-business-needs-workflow-automation", title: "5 Signs Your Business Needs Workflow Automation", excerpt: 'From "we do this in a spreadsheet every Monday" to "only one person knows how this works" — the tells that a manual process is quietly costing you more than it should.', category: "Automation", readTime: "5 min read", date: "Jun 2026", author: { name: "Aditya Kulkarni", initials: "AK" } },
+  { slug: "case-study-gpt4-chatbot-80-percent-support", title: "How We Built a GPT-4 Chatbot That Handles 80% of Support Tickets", excerpt: "Inside the build: how TechStart went from a two-person support team drowning in tickets to an 80% auto-resolution rate — the training data, the escalation logic, and what we'd do differently.", category: "Case study", readTime: "9 min read", date: "Aug 2026", author: { name: "Aditya Kulkarni", initials: "AK" } },
+  { slug: "freelancer-vs-agency-cost-2026", title: "The True Cost of Hiring a Freelancer vs. an Agency in 2026", excerpt: "A line-by-line breakdown of where agency budgets actually go, and when paying for that overhead is genuinely worth it — and when it isn't.", category: "Web development", readTime: "6 min read", date: "Jun 2026", author: { name: "Aditya Kulkarni", initials: "AK" } },
+  { slug: "ai-automation-tools-we-use", title: "AI Automation Tools We Actually Use (And Recommend) in Our Projects", excerpt: "No affiliate-link listicle — the specific tools in our stack for orchestration, monitoring, and integrations, and why we picked each one.", category: "Automation", readTime: "7 min read", date: "May 2026", author: { name: "Aditya Kulkarni", initials: "AK" } },
+  { slug: "2-4-week-web-dev-process", title: "From Idea to Launch: Our 2-4 Week Web Development Process Explained", excerpt: "What actually happens in each week of a build — discovery, design, development, and launch — so you know what to expect before you sign anything.", category: "Web development", readTime: "6 min read", date: "May 2026", author: { name: "Aditya Kulkarni", initials: "AK" } },
 ];
 
 const tocSections = [
-  "The problem",
-  "Our approach",
-  "Training the model",
-  "Escalation logic",
-  "Results",
-  "What we'd do differently",
+  { label: "The problem", id: "the-problem" },
+  { label: "Our approach", id: "our-approach" },
+  { label: "Training the model", id: "training-the-model" },
+  { label: "Escalation logic", id: "escalation-logic" },
+  { label: "Results", id: "results" },
+  { label: "What we'd do differently", id: "what-wed-do-differently" },
 ];
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = posts.find((p) => p.slug === params.slug);
+export default function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
+  const post = posts.find((p) => p.slug === slug);
   const [activeSection, setActiveSection] = useState(0);
 
   useEffect(() => {
@@ -145,13 +56,8 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     const handleScroll = () => {
       const scrollY = window.scrollY + 140;
       let current = 0;
-      tocSections.forEach((_, i) => {
-        const el = document.getElementById(
-          tocSections[i]
-            .toLowerCase()
-            .replace(/\s+/g, "-")
-            .replace(/[^a-z0-9-]/g, "")
-        );
+      tocSections.forEach((s, i) => {
+        const el = document.getElementById(s.id);
         if (el && scrollY >= el.offsetTop) current = i;
       });
       setActiveSection(current);
@@ -216,42 +122,37 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             <h4>On this page</h4>
             {tocSections.map((s, i) => (
               <a
-                key={i}
-                href={`#${s
-                  .toLowerCase()
-                  .replace(/\s+/g, "-")
-                  .replace(/[^a-z0-9-]/g, "")}`}
+                key={s.id}
+                href={`#${s.id}`}
                 className={activeSection === i ? "active" : ""}
               >
-                {s}
+                {s.label}
               </a>
             ))}
           </aside>
 
           <article className="post-body">
             <p>
-              When TechStart came to us, their two-person support team was
-              answering the same handful of questions dozens of times a day —
-              password resets, billing cycles, plan differences — while genuinely
-              hard tickets sat in the queue for hours. This is the story of how
-              we built a chatbot that took over the repetitive 80% without making
-              the remaining 20% worse.
+              When TechStart came to us, their two-person support team was answering
+              the same handful of questions dozens of times a day — password resets,
+              billing cycles, plan differences — while genuinely hard tickets sat in
+              the queue for hours. This is the story of how we built a chatbot that
+              took over the repetitive 80% without making the remaining 20% worse.
             </p>
 
             <h2 id="the-problem">The problem</h2>
             <p>
               TechStart&apos;s response time had crept past 12 hours during peak
-              periods. Not because their team was slow, but because roughly four
-              out of five incoming tickets were variations on the same dozen
-              questions. Every minute spent answering &quot;how do I reset my
-              password&quot; was a minute not spent on the customer with an actual
-              account issue.
+              periods. Not because their team was slow, but because roughly four out
+              of five incoming tickets were variations on the same dozen questions.
+              Every minute spent answering &quot;how do I reset my password&quot; was a
+              minute not spent on the customer with an actual account issue.
             </p>
             <p>
               The founder&apos;s instinct — add a chatbot — was right, but the
-              failure mode we see most often is a bot that answers confidently
-              and wrong, which erodes trust faster than a slow human ever would.
-              So the brief wasn&apos;t &quot;add AI.&quot; It was &quot;resolve the easy
+              failure mode we see most often is a bot that answers confidently and
+              wrong, which erodes trust faster than a slow human ever would. So the
+              brief wasn&apos;t &quot;add AI.&quot; It was &quot;resolve the easy
               stuff correctly, and know when to get out of the way.&quot;
             </p>
 
@@ -260,8 +161,8 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               We started with a week of read-only access to their help center and
               the last six months of support tickets, categorizing every incoming
               question by type and by how confidently a documented answer already
-              existed. That categorization became the actual product spec — it
-              told us exactly which 80% was safe to automate.
+              existed. That categorization became the actual product spec — it told
+              us exactly which 80% was safe to automate.
             </p>
 
             <div className="pull-quote">
@@ -283,28 +184,27 @@ const context = await searchKnowledgeBase(userQuestion, { minConfidence: 0.78 })
 if (context.length === 0) return escalateToHuman(userQuestion);
 const answer = await generateAnswer(userQuestion, context);`}</pre>
             <p>
-              Every answer is grounded in retrieved source material rather than
-              the model&apos;s general knowledge, and we log a confidence score
+              Every answer is grounded in retrieved source material rather than the
+              model&apos;s general knowledge, and we log a confidence score
               alongside every response so we can audit drift over time.
             </p>
 
             <h2 id="escalation-logic">Escalation logic</h2>
             <p>
               The most important part of the build wasn&apos;t the answers — it
-              was the exits. Any question below the confidence threshold,
-              anything touching billing disputes or account security, and
-              anything a customer explicitly asked to escalate goes straight to a
-              human, along with the full conversation so far. No one repeats
-              themselves.
+              was the exits. Any question below the confidence threshold, anything
+              touching billing disputes or account security, and anything a customer
+              explicitly asked to escalate goes straight to a human, along with the
+              full conversation so far. No one repeats themselves.
             </p>
 
             <h2 id="results">Results</h2>
             <p>
-              Within the first month, the bot was resolving 80% of incoming
-              queries without a human touching them. First response time for the
-              remaining 20% — the genuinely hard tickets — dropped to under 20
-              minutes, because the support team was no longer buried under
-              repetitive questions.
+              Within the first month, the bot was resolving 80% of incoming queries
+              without a human touching them. First response time for the remaining
+              20% — the genuinely hard tickets — dropped to under 20 minutes,
+              because the support team was no longer buried under repetitive
+              questions.
             </p>
             <p>
               Customer satisfaction on bot-resolved tickets actually came in
@@ -347,8 +247,8 @@ const answer = await generateAnswer(userQuestion, context);`}</pre>
               <div>
                 <div style={{ fontWeight: 600 }}>{post.author.name}</div>
                 <div className="muted" style={{ fontSize: 13.5, marginTop: 4 }}>
-                  Founder, WebSwiftPro — builds web, AI, and automation products
-                  for growing businesses.
+                  Founder, WebSwiftPro — builds web, AI, and automation products for
+                  growing businesses.
                 </div>
               </div>
             </div>
@@ -364,11 +264,7 @@ const answer = await generateAnswer(userQuestion, context);`}</pre>
           </div>
           <div className="post-grid" style={{ marginTop: 24 }}>
             {related.map((r) => (
-              <Link
-                key={r.slug}
-                href={`/blog/${r.slug}`}
-                className="post-card reveal"
-              >
+              <Link key={r.slug} href={`/blog/${r.slug}`} className="post-card reveal">
                 <div className="pc-media"></div>
                 <div className="pc-body">
                   <span className="tag-pill">{r.category}</span>
