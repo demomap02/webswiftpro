@@ -1,247 +1,264 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Search, Clock, Calendar, ArrowRight, Sparkles } from "lucide-react";
-import { blogPosts, categories } from "@/lib/blog-data";
-import { SectionHeader, BentoCard } from "@/components/ui-bits";
+
+interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  readTime: string;
+  date: string;
+  author: { name: string; initials: string };
+  tags: string[];
+}
+
+const posts: BlogPost[] = [
+  {
+    slug: "how-ai-chatbots-cut-support-costs-80-percent",
+    title: "How AI Chatbots Are Cutting Customer Support Costs by 80%",
+    excerpt:
+      "Why \"just add a chatbot\" fails for most teams, and the specific setup that actually moves the resolution-rate needle — training data, escalation rules, and honest limits.",
+    content: "",
+    category: "chatbots",
+    readTime: "6 min read",
+    date: "Aug 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["AI", "Support", "Automation"],
+  },
+  {
+    slug: "nextjs-vs-wordpress-2026",
+    title: "Next.js vs. Traditional WordPress: Which Is Right for Your Business in 2026?",
+    excerpt:
+      "A practical comparison for non-developers — load speed, editing workflow, hosting cost, and which one actually makes sense for a small business site.",
+    content: "",
+    category: "web-dev",
+    readTime: "7 min read",
+    date: "Jul 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Next.js", "WordPress", "Web Development"],
+  },
+  {
+    slug: "what-is-agentic-ai-practical-guide",
+    title: "What Is Agentic AI? A Practical Guide for Business Owners",
+    excerpt:
+      "Cutting through the buzzword: what makes an \"agent\" different from a chatbot, what it can safely be trusted to do alone, and where a human should stay in the loop.",
+    content: "",
+    category: "automation",
+    readTime: "8 min read",
+    date: "Jul 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Agentic AI", "Automation", "Business"],
+  },
+  {
+    slug: "5-signs-your-business-needs-workflow-automation",
+    title: "5 Signs Your Business Needs Workflow Automation",
+    excerpt:
+      "From \"we do this in a spreadsheet every Monday\" to \"only one person knows how this works\" — the tells that a manual process is quietly costing you more than it should.",
+    content: "",
+    category: "automation",
+    readTime: "5 min read",
+    date: "Jun 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Automation", "Workflow", "Business"],
+  },
+  {
+    slug: "case-study-gpt4-chatbot-80-percent-support",
+    title: "Case Study: How We Built a GPT-4 Chatbot That Handles 80% of Support Tickets",
+    excerpt:
+      "The full build breakdown for TechStart's support bot — data sources, escalation thresholds, and the metric that mattered more than accuracy.",
+    content: "",
+    category: "case-studies",
+    readTime: "9 min read",
+    date: "Aug 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Case Study", "Chatbots", "GPT-4"],
+  },
+  {
+    slug: "freelancer-vs-agency-cost-2026",
+    title: "The True Cost of Hiring a Freelancer vs. an Agency in 2026",
+    excerpt:
+      "A line-by-line breakdown of where agency budgets actually go, and when paying for that overhead is genuinely worth it — and when it isn't.",
+    content: "",
+    category: "web-dev",
+    readTime: "6 min read",
+    date: "Jun 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Freelancer", "Agency", "Cost"],
+  },
+  {
+    slug: "ai-automation-tools-we-use",
+    title: "AI Automation Tools We Actually Use (And Recommend) in Our Projects",
+    excerpt:
+      "No affiliate-link listicle — the specific tools in our stack for orchestration, monitoring, and integrations, and why we picked each one.",
+    content: "",
+    category: "automation",
+    readTime: "7 min read",
+    date: "May 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Tools", "Automation", "Stack"],
+  },
+  {
+    slug: "2-4-week-web-dev-process",
+    title: "From Idea to Launch: Our 2-4 Week Web Development Process Explained",
+    excerpt:
+      "What actually happens in each week of a build — discovery, design, development, and launch — so you know what to expect before you sign anything.",
+    content: "",
+    category: "web-dev",
+    readTime: "6 min read",
+    date: "May 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Process", "Web Development", "Next.js"],
+  },
+];
+
+const categories = [
+  { slug: "all", label: "All posts" },
+  { slug: "web-dev", label: "Web development" },
+  { slug: "chatbots", label: "AI chatbots" },
+  { slug: "automation", label: "Automation" },
+  { slug: "case-studies", label: "Case studies" },
+];
+
+const featuredPost = posts[4]; // Case study
 
 export default function BlogPage() {
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredPosts = useMemo(() => {
-    let posts = blogPosts;
-    if (activeCategory !== "All") {
-      posts = posts.filter((p) => p.category === activeCategory);
-    }
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      posts = posts.filter(
-        (p) =>
-          p.title.toLowerCase().includes(query) ||
-          p.excerpt.toLowerCase().includes(query) ||
-          p.tags.some((t) => t.toLowerCase().includes(query))
-      );
-    }
-    return posts;
-  }, [activeCategory, searchQuery]);
+  useEffect(() => {
+    const reveals = document.querySelectorAll(".reveal");
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    reveals.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
 
-  const featured = blogPosts[0];
+  const filteredPosts = posts.filter((p) => {
+    const matchesCat = activeCategory === "all" || p.category === activeCategory;
+    const matchesTerm =
+      !searchTerm ||
+      p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCat && matchesTerm;
+  });
 
   return (
-    <div className="min-h-screen">
-      <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50 via-violet-50/30 to-white dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950" />
-        <div className="absolute top-1/4 left-1/4 h-72 w-72 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 h-80 w-80 bg-violet-500/10 rounded-full blur-3xl animate-pulse" />
+    <div>
+      <header className="page-hero">
+        <div className="wrap">
+          <div className="eyebrow">The build log</div>
+          <h1>Notes on AI, automation, and shipping fast</h1>
+          <p className="lede muted">
+            What we&apos;re learning from real client projects — written for business
+            owners, not other engineers.
+          </p>
+        </div>
+      </header>
 
-        <div className="relative mx-auto max-w-7xl px-6">
-          <SectionHeader
-            badge={
-              <>
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
-                </span>
-                <span>New post every morning at 6 AM</span>
-              </>
-            }
-            title="The WebSwiftPro Blog"
-            description="Insights on AI, web development, and building digital products that actually scale."
-          />
-
-          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex flex-wrap gap-2">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                    activeCategory === cat
-                      ? "bg-gradient-to-r from-blue-500 to-violet-500 text-white shadow-lg shadow-blue-500/30"
-                      : "bg-white/60 dark:bg-zinc-900/60 text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-800 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-800/50"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+      <section style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <Link
+            href={`/blog/${featuredPost.slug}`}
+            className="featured-post reveal"
+          >
+            <div className="fp-media"></div>
+            <div className="fp-body">
+              <span className="tag-pill">Case study</span>
+              <h2>{featuredPost.title}</h2>
+              <p>{featuredPost.excerpt}</p>
+              <div className="post-meta">
+                <div className="avatar-ring" style={{ width: 32, height: 32 }}>
+                  <span style={{ fontSize: 11 }}>{featuredPost.author.initials}</span>
+                </div>
+                <span>{featuredPost.author.name}</span>
+                <span>·</span>
+                <span>{featuredPost.readTime}</span>
+                <span>·</span>
+                <span>{featuredPost.date}</span>
+              </div>
             </div>
+          </Link>
 
-            <div className="relative w-full md:w-80">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+          <div className="filter-row reveal">
+            {categories.map((c) => (
+              <button
+                key={c.slug}
+                className={`filter-chip ${activeCategory === c.slug ? "active" : ""}`}
+                onClick={() => setActiveCategory(c.slug)}
+              >
+                {c.label}
+              </button>
+            ))}
+            <div className="search-row">
               <input
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search articles..."
-                className="w-full rounded-full border border-zinc-200/50 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-800/50"
+                type="text"
+                placeholder="Search articles…"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
-        </div>
-      </section>
 
-      <section className="py-8 pb-16">
-        <div className="mx-auto max-w-7xl px-6">
-          {activeCategory === "All" && !searchQuery && (
-            <Link href={`/blog/${featured.slug}`}>
-              <motion.article
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="group mb-16"
-              >
-                <BentoCard span={4} className="grid md:grid-cols-2 gap-0 p-0 overflow-hidden">
-                  <div className="relative aspect-[4/3] md:aspect-auto overflow-hidden">
-                    <img
-                      src={featured.coverImage}
-                      alt={featured.title}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-blue-500 to-violet-500 text-white">
-                        Featured
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-8 md:p-12 flex flex-col justify-center">
-                    <div className="flex items-center gap-3 text-sm text-zinc-500 mb-4">
-                      <span className="px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium">
-                        {featured.category}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        {new Date(featured.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {featured.readTime} min
-                      </span>
-                    </div>
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4 group-hover:bg-gradient-to-r group-hover:from-blue-500 group-hover:to-violet-500 group-hover:bg-clip-text group-hover:text-transparent transition-all">
-                      {featured.title}
-                    </h2>
-                    <p className="text-zinc-600 dark:text-zinc-400 mb-6">{featured.excerpt}</p>
-                    <div className="flex items-center gap-2 text-blue-500 font-medium group-hover:gap-3 transition-all">
-                      Read article
-                      <ArrowRight className="w-4 h-4" />
-                    </div>
-                  </div>
-                </BentoCard>
-              </motion.article>
-            </Link>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="post-grid">
             {filteredPosts
-              .filter((p) => !(activeCategory === "All" && !searchQuery && p.slug === featured.slug))
-              .map((post, i) => (
-                <motion.article
+              .filter((p) => p.slug !== featuredPost.slug)
+              .map((post) => (
+                <Link
                   key={post.slug}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.05 }}
-                  className="group"
+                  href={`/blog/${post.slug}`}
+                  className="post-card reveal"
+                  data-cat={post.category}
+                  data-title={post.title}
                 >
-                  <Link href={`/blog/${post.slug}`}>
-                    <BentoCard className="h-full p-0 overflow-hidden">
-                      <div className="relative aspect-[4/3] overflow-hidden">
-                        <img
-                          src={post.coverImage}
-                          alt={post.title}
-                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                        <div className="absolute top-3 left-3">
-                          <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-white/90 dark:bg-zinc-900/90 text-zinc-700 dark:text-zinc-300 backdrop-blur-sm">
-                            {post.category}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="p-6">
-                        <div className="flex items-center gap-3 text-xs text-zinc-500 mb-3">
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            {new Date(post.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                          </span>
-                          <span>•</span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {post.readTime} min
-                          </span>
-                        </div>
-                        <h3 className="text-lg font-bold mb-2 line-clamp-2 group-hover:text-blue-500 transition-colors">
-                          {post.title}
-                        </h3>
-                        <p className="text-zinc-600 dark:text-zinc-400 text-sm line-clamp-3">
-                          {post.excerpt}
-                        </p>
-                        <div className="mt-4 flex items-center gap-2">
-                          <div className="h-6 w-6 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white text-xs font-bold">
-                            {post.author.avatar}
-                          </div>
-                          <span className="text-xs text-zinc-500">{post.author.name}</span>
-                        </div>
-                      </div>
-                    </BentoCard>
-                  </Link>
-                </motion.article>
+                  <div className="pc-media"></div>
+                  <div className="pc-body">
+                    <span className="tag-pill">{categories.find((c) => c.slug === post.category)?.label}</span>
+                    <h3>{post.title}</h3>
+                    <p>{post.excerpt}</p>
+                    <div className="post-meta">
+                      <span>{post.readTime}</span>
+                      <span>·</span>
+                      <span>{post.date}</span>
+                    </div>
+                  </div>
+                </Link>
               ))}
           </div>
-
-          {filteredPosts.length === 0 && (
-            <div className="text-center py-16">
-              <p className="text-xl text-zinc-500">No articles found. Try a different search.</p>
-            </div>
-          )}
         </div>
       </section>
 
-      <section className="py-20">
-        <div className="mx-auto max-w-3xl px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-blue-500/10 via-violet-500/10 to-cyan-500/10 p-10 md:p-12 backdrop-blur-xl"
-          >
-            <div className="absolute inset-0 -z-10 bg-gradient-to-r from-blue-500/20 to-violet-500/20" />
-            <div className="relative z-10 text-center">
-              <Sparkles className="w-12 h-12 mx-auto mb-4 text-blue-400" />
-              <h2 className="text-3xl md:text-4xl font-extrabold mb-4">
-                Get AI & automation insights in your inbox
-              </h2>
-              <p className="text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">
-                Join 500+ founders and developers. One fresh article every morning.
+      <section>
+        <div className="wrap">
+          <div className="newsletter-card reveal">
+            <div>
+              <h3 style={{ fontSize: 22 }}>Get AI & automation insights in your inbox</h3>
+              <p className="muted" style={{ marginTop: 8, fontSize: 14.5 }}>
+                One email a month. No sales pitches, just what we&apos;re learning.
               </p>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  alert("Thanks for subscribing!");
-                }}
-                className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-              >
-                <input
-                  type="email"
-                  required
-                  placeholder="your@email.com"
-                  className="flex-1 rounded-full border border-white/20 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-md px-6 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                  type="submit"
-                  className="px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 via-violet-500 to-cyan-500 text-white font-semibold hover:shadow-2xl hover:shadow-blue-500/30 transition-all flex items-center justify-center gap-2"
-                >
-                  Subscribe
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </form>
-              <p className="text-xs text-zinc-500 mt-4">No spam. Unsubscribe anytime.</p>
             </div>
-          </motion.div>
+            <form>
+              <input
+                type="email"
+                placeholder="you@company.com"
+                required
+              />
+              <button type="submit" className="btn btn-primary">
+                Subscribe
+              </button>
+            </form>
+          </div>
         </div>
       </section>
     </div>

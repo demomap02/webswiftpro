@@ -1,49 +1,44 @@
 export function Footer() {
   return (
-    <footer className="border-t border-zinc-200 bg-white dark:border-zinc-800 dark:bg-black">
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+    <footer>
+      <div className="wrap">
+        <div className="footer-grid">
           <div>
-            <h3 className="mb-4 text-lg font-bold">WebSwiftPro</h3>
-            <p className="text-zinc-600 dark:text-zinc-400">
+            <div className="nav-mark"><span className="dot"></span>WebSwiftPro</div>
+            <p className="muted" style={{marginTop:14, maxWidth:280, fontSize:14.5}}>
               Transforming businesses with intelligent automation and cutting-edge web solutions.
             </p>
           </div>
-
           <div>
-            <h4 className="mb-4 font-semibold">Services</h4>
-            <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
-              <li>AI Chatbots</li>
-              <li>Agentic AI Automation</li>
-              <li>Web Development</li>
-              <li>Mobile Development</li>
+            <h4>Services</h4>
+            <ul>
+              <li><a href="/ai-solutions">AI Chatbots</a></li>
+              <li><a href="/ai-solutions">Agentic AI Automation</a></li>
+              <li><a href="/services">Web Development</a></li>
+              <li><a href="/services">Mobile Development</a></li>
             </ul>
           </div>
-
           <div>
-            <h4 className="mb-4 font-semibold">Quick Links</h4>
-            <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
-              <li>About</li>
-              <li>Portfolio</li>
-              <li>Blog</li>
-              <li>Contact</li>
+            <h4>Quick links</h4>
+            <ul>
+              <li><a href="/about">About</a></li>
+              <li><a href="/portfolio">Portfolio</a></li>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/contact">Contact</a></li>
             </ul>
           </div>
-
           <div>
-            <h4 className="mb-4 font-semibold">Connect</h4>
-            <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
-              <li>hello@webswiftpro.in</li>
-              <li>+91 98765 43210</li>
-              <li>Mumbai, India</li>
+            <h4>Connect</h4>
+            <ul>
+              <li><a href="mailto:hello@webswiftpro.in">hello@webswiftpro.in</a></li>
+              <li><a href="tel:+919876543210">+91 98765 43210</a></li>
+              <li><span className="muted">Mumbai, India</span></li>
             </ul>
           </div>
         </div>
-
-        <div className="mt-8 border-t border-zinc-200 pt-8 text-center dark:border-zinc-800">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            © 2024 WebSwiftPro. All rights reserved.
-          </p>
+        <div className="footer-bottom">
+          <span>© 2026 WebSwiftPro. All rights reserved.</span>
+          <span>Built with intent, not templates.</span>
         </div>
       </div>
     </footer>

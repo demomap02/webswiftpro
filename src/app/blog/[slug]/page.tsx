@@ -1,21 +1,175 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Clock, Calendar, ArrowLeft, ArrowRight, Linkedin, Twitter, Link as LinkIcon, Check } from "lucide-react";
-import { useState } from "react";
-import { getPostBySlug, getRelatedPosts } from "@/lib/blog-data";
+
+interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  readTime: string;
+  date: string;
+  author: { name: string; initials: string };
+  tags: string[];
+}
+
+const posts: BlogPost[] = [
+  {
+    slug: "how-ai-chatbots-cut-support-costs-80-percent",
+    title: "How AI Chatbots Are Cutting Customer Support Costs by 80%",
+    excerpt:
+      'Why "just add a chatbot" fails for most teams, and the specific setup that actually moves the resolution-rate needle — training data, escalation rules, and honest limits.',
+    content: "",
+    category: "AI chatbots",
+    readTime: "6 min read",
+    date: "Aug 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["AI", "Support", "Automation"],
+  },
+  {
+    slug: "nextjs-vs-wordpress-2026",
+    title: "Next.js vs. Traditional WordPress: Which Is Right for Your Business in 2026?",
+    excerpt:
+      "A practical comparison for non-developers — load speed, editing workflow, hosting cost, and which one actually makes sense for a small business site.",
+    content: "",
+    category: "Web development",
+    readTime: "7 min read",
+    date: "Jul 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Next.js", "WordPress"],
+  },
+  {
+    slug: "what-is-agentic-ai-practical-guide",
+    title: "What Is Agentic AI? A Practical Guide for Business Owners",
+    excerpt:
+      'Cutting through the buzzword: what makes an "agent" different from a chatbot, what it can safely be trusted to do alone, and where a human should stay in the loop.',
+    content: "",
+    category: "Automation",
+    readTime: "8 min read",
+    date: "Jul 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Agentic AI", "Automation"],
+  },
+  {
+    slug: "5-signs-your-business-needs-workflow-automation",
+    title: "5 Signs Your Business Needs Workflow Automation",
+    excerpt:
+      'From "we do this in a spreadsheet every Monday" to "only one person knows how this works" — the tells that a manual process is quietly costing you more than it should.',
+    content: "",
+    category: "Automation",
+    readTime: "5 min read",
+    date: "Jun 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Automation", "Workflow"],
+  },
+  {
+    slug: "case-study-gpt4-chatbot-80-percent-support",
+    title: "How We Built a GPT-4 Chatbot That Handles 80% of Support Tickets",
+    excerpt:
+      "Inside the build: how TechStart went from a two-person support team drowning in tickets to an 80% auto-resolution rate — the training data, the escalation logic, and what we'd do differently.",
+    content: "",
+    category: "Case study",
+    readTime: "9 min read",
+    date: "Aug 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Case Study", "Chatbots", "GPT-4"],
+  },
+  {
+    slug: "freelancer-vs-agency-cost-2026",
+    title: "The True Cost of Hiring a Freelancer vs. an Agency in 2026",
+    excerpt:
+      "A line-by-line breakdown of where agency budgets actually go, and when paying for that overhead is genuinely worth it — and when it isn't.",
+    content: "",
+    category: "Web development",
+    readTime: "6 min read",
+    date: "Jun 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Freelancer", "Agency"],
+  },
+  {
+    slug: "ai-automation-tools-we-use",
+    title: "AI Automation Tools We Actually Use (And Recommend) in Our Projects",
+    excerpt:
+      "No affiliate-link listicle — the specific tools in our stack for orchestration, monitoring, and integrations, and why we picked each one.",
+    content: "",
+    category: "Automation",
+    readTime: "7 min read",
+    date: "May 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Tools", "Automation"],
+  },
+  {
+    slug: "2-4-week-web-dev-process",
+    title: "From Idea to Launch: Our 2-4 Week Web Development Process Explained",
+    excerpt:
+      "What actually happens in each week of a build — discovery, design, development, and launch — so you know what to expect before you sign anything.",
+    content: "",
+    category: "Web development",
+    readTime: "6 min read",
+    date: "May 2026",
+    author: { name: "Aditya Kulkarni", initials: "AK" },
+    tags: ["Process", "Web Development"],
+  },
+];
+
+const tocSections = [
+  "The problem",
+  "Our approach",
+  "Training the model",
+  "Escalation logic",
+  "Results",
+  "What we'd do differently",
+];
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = getPostBySlug(params.slug);
-  const [copied, setCopied] = useState(false);
+  const post = posts.find((p) => p.slug === params.slug);
+  const [activeSection, setActiveSection] = useState(0);
+
+  useEffect(() => {
+    const reveals = document.querySelectorAll(".reveal");
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    reveals.forEach((el) => io.observe(el));
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY + 140;
+      let current = 0;
+      tocSections.forEach((_, i) => {
+        const el = document.getElementById(
+          tocSections[i]
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^a-z0-9-]/g, "")
+        );
+        if (el && scrollY >= el.offsetTop) current = i;
+      });
+      setActiveSection(current);
+    };
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   if (!post) {
     return (
-      <div className="min-h-screen flex items-center justify-center pt-32">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Post not found</h1>
-          <Link href="/blog" className="text-blue-500 hover:underline">
+      <div style={{ padding: "120px 0", textAlign: "center" }}>
+        <div className="wrap">
+          <h1 style={{ marginBottom: 16 }}>Post not found</h1>
+          <Link href="/blog" className="btn btn-ghost" style={{ marginTop: 16, display: "inline-flex" }}>
             ← Back to blog
           </Link>
         </div>
@@ -23,313 +177,237 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     );
   }
 
-  const relatedPosts = getRelatedPosts(params.slug, 3);
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const sections = post.content
-    .split("\n")
-    .filter((line) => line.startsWith("## "))
-    .map((line) => line.replace("## ", ""));
+  const related = posts.filter((p) => p.slug !== post.slug).slice(0, 3);
 
   return (
-    <article className="min-h-screen">
-      <header className="relative pt-16 pb-12 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50 via-violet-50/20 to-white dark:from-zinc-950 dark:via-zinc-900/50 dark:to-zinc-950" />
-        <div className="absolute top-0 left-1/4 h-72 w-72 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-0 right-1/4 h-80 w-80 bg-violet-500/10 rounded-full blur-3xl animate-pulse" />
-
-        <div className="relative mx-auto max-w-4xl px-6">
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-blue-500 mb-8 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to blog
-          </Link>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="flex items-center gap-3 text-sm mb-6">
-              <span className="px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/10 to-violet-500/10 text-blue-600 dark:text-blue-400 font-medium border border-blue-500/20">
-                {post.category}
-              </span>
-              <span className="flex items-center gap-1 text-zinc-500">
-                <Calendar className="w-4 h-4" />
-                {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </span>
-              <span className="flex items-center gap-1 text-zinc-500">
-                <Clock className="w-4 h-4" />
-                {post.readTime} min read
-              </span>
+    <div>
+      <header className="page-hero" style={{ paddingBottom: 32 }}>
+        <div className="wrap">
+          <span className="tag-pill">{post.category}</span>
+          <h1>{post.title}</h1>
+          <div className="post-meta" style={{ marginTop: 20 }}>
+            <div className="avatar-ring" style={{ width: 34, height: 34 }}>
+              <span style={{ fontSize: 11 }}>{post.author.initials}</span>
             </div>
-
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
-              {post.title}
-            </h1>
-
-            <p className="text-xl text-zinc-600 dark:text-zinc-400 mb-8">{post.excerpt}</p>
-
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold">
-                  {post.author.avatar}
-                </div>
-                <div>
-                  <p className="font-semibold">{post.author.name}</p>
-                  <p className="text-sm text-zinc-500">{post.author.role}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-zinc-500 mr-2">Share:</span>
-                <button
-                  onClick={handleCopyLink}
-                  className="h-9 w-9 rounded-full border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center transition-colors"
-                >
-                  {copied ? <Check className="w-4 h-4 text-green-500" /> : <LinkIcon className="w-4 h-4" />}
-                </button>
-                <a
-                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="h-9 w-9 rounded-full border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center transition-colors"
-                >
-                  <Twitter className="w-4 h-4" />
-                </a>
-                <a
-                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://webswiftpro.in/blog/${post.slug}`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="h-9 w-9 rounded-full border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center transition-colors"
-                >
-                  <Linkedin className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
-          </motion.div>
+            <span>{post.author.name}</span>
+            <span>·</span>
+            <span>{post.readTime}</span>
+            <span>·</span>
+            <span>{post.date}</span>
+          </div>
         </div>
       </header>
 
-      <div className="relative mx-auto max-w-7xl px-6 mb-12">
-        <div className="relative aspect-[21/9] overflow-hidden rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50">
-          <img
-            src={post.coverImage}
-            alt={post.title}
-            className="h-full w-full object-cover"
-          />
-        </div>
+      <div className="wrap">
+        <div
+          className="fp-media"
+          style={{
+            borderRadius: "var(--radius-lg)",
+            height: 340,
+            border: "1px solid var(--ink-line)",
+            minHeight: 340,
+          }}
+        ></div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-6 pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="prose prose-zinc dark:prose-invert max-w-none prose-headings:font-bold prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-4 prose-p:text-zinc-600 dark:prose-p:text-zinc-300 prose-p:leading-relaxed prose-h2:bg-gradient-to-r prose-h2:from-blue-500 prose-h2:to-violet-500 prose-h2:bg-clip-text prose-h2:text-transparent prose-table:my-6 prose-th:bg-zinc-100 dark:prose-th:bg-zinc-800 prose-th:p-3 prose-td:p-3"
-          >
-            {post.content.split("\n\n").map((block, i) => {
-              if (block.startsWith("## ")) {
-                return (
-                  <h2 key={i} id={block.replace("## ", "").toLowerCase().replace(/\s+/g, "-")}>
-                    {block.replace("## ", "")}
-                  </h2>
-                );
-              }
-              if (block.startsWith("|")) {
-                const rows = block.split("\n").filter((r) => r.startsWith("|"));
-                if (rows.length >= 2) {
-                  const headers = rows[0].split("|").filter(Boolean).map((h) => h.trim());
-                  const dataRows = rows.slice(2);
-                  return (
-                    <div key={i} className="my-8 overflow-x-auto">
-                      <table className="w-full">
-                        <thead>
-                          <tr>
-                            {headers.map((h) => (
-                              <th key={h} className="bg-zinc-100 dark:bg-zinc-800 p-3 text-left font-semibold">
-                                {h}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {dataRows.map((row, ri) => (
-                            <tr key={ri} className="border-t border-zinc-200 dark:border-zinc-800">
-                              {row.split("|").filter(Boolean).map((cell, ci) => (
-                                <td key={ci} className="p-3">
-                                  {cell.trim()}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  );
-                }
-                return null;
-              }
-              if (block.match(/^[-*]\s/m)) {
-                const items = block.split("\n").filter((l) => l.match(/^[-*]\s/));
-                return (
-                  <ul key={i} className="my-6 space-y-2 list-none pl-0">
-                    {items.map((item, j) => (
-                      <li key={j} className="flex items-start gap-3">
-                        <span className="mt-2 h-1.5 w-1.5 rounded-full bg-gradient-to-r from-blue-500 to-violet-500 flex-shrink-0" />
-                        <span dangerouslySetInnerHTML={{
-                          __html: item.replace(/^[-*]\s/, "").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                        }} />
-                      </li>
-                    ))}
-                  </ul>
-                );
-              }
-              if (block.match(/^\d+\.\s/m)) {
-                const items = block.split("\n").filter((l) => l.match(/^\d+\.\s/));
-                return (
-                  <ol key={i} className="my-6 space-y-2 list-none pl-0 counter-reset-item">
-                    {items.map((item, j) => (
-                      <li key={j} className="flex items-start gap-3">
-                        <span className="mt-0.5 h-6 w-6 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
-                          {j + 1}
-                        </span>
-                        <span dangerouslySetInnerHTML={{
-                          __html: item.replace(/^\d+\.\s/, "").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                        }} />
-                      </li>
-                    ))}
-                  </ol>
-                );
-              }
-              return (
-                <p
-                  key={i}
-                  className="my-4 text-zinc-600 dark:text-zinc-300 leading-relaxed"
-                  dangerouslySetInnerHTML={{
-                    __html: block.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                  }}
-                />
-              );
-            })}
-
-            <div className="mt-16 p-8 rounded-2xl bg-gradient-to-br from-blue-500/10 via-violet-500/10 to-cyan-500/10 border border-white/10 backdrop-blur-md not-prose">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold">
-                  W
-                </div>
-                <div>
-                  <p className="font-semibold">{post.author.name}</p>
-                  <p className="text-sm text-zinc-500">{post.author.role}</p>
-                </div>
-              </div>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Solo founder, full-stack developer, and AI enthusiast. Building WebSwiftPro to deliver
-                agency-quality work without the agency overhead.
-              </p>
-            </div>
-          </motion.div>
-
-          <aside className="hidden lg:block">
-            <div className="sticky top-24">
-              <h4 className="text-sm font-semibold text-zinc-500 uppercase tracking-wide mb-4">
-                On this page
-              </h4>
-              <ul className="space-y-2 border-l border-zinc-200 dark:border-zinc-800">
-                {sections.map((section) => (
-                  <li key={section}>
-                    <a
-                      href={`#${section.toLowerCase().replace(/\s+/g, "-")}`}
-                      className="block -ml-px pl-4 border-l-2 border-transparent hover:border-blue-500 text-sm text-zinc-600 dark:text-zinc-400 hover:text-blue-500 transition-colors"
-                    >
-                      {section}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-8 p-6 rounded-2xl bg-gradient-to-br from-blue-500/10 to-violet-500/10 border border-white/10 backdrop-blur-md">
-                <p className="text-sm font-semibold mb-2">Want updates like this?</p>
-                <p className="text-xs text-zinc-500 mb-4">Daily insights on AI & dev in your inbox.</p>
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="w-full px-3 py-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
-                />
-                <button className="w-full px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-violet-500 text-white text-sm font-medium">
-                  Subscribe
-                </button>
-              </div>
-            </div>
+      <section>
+        <div className="wrap post-layout">
+          <aside className="toc">
+            <h4>On this page</h4>
+            {tocSections.map((s, i) => (
+              <a
+                key={i}
+                href={`#${s
+                  .toLowerCase()
+                  .replace(/\s+/g, "-")
+                  .replace(/[^a-z0-9-]/g, "")}`}
+                className={activeSection === i ? "active" : ""}
+              >
+                {s}
+              </a>
+            ))}
           </aside>
-        </div>
-      </div>
 
-      {relatedPosts.length > 0 && (
-        <section className="py-16 bg-zinc-50 dark:bg-zinc-900/50">
-          <div className="mx-auto max-w-7xl px-6">
-            <h2 className="text-3xl font-bold mb-8">Related Articles</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedPosts.map((related) => (
-                <Link
-                  key={related.slug}
-                  href={`/blog/${related.slug}`}
-                  className="group"
-                >
-                  <article className="bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 hover:shadow-xl transition-all">
-                    <div className="aspect-[4/3] overflow-hidden">
-                      <img
-                        src={related.coverImage}
-                        alt={related.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    </div>
-                    <div className="p-5">
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
-                        {related.category}
-                      </span>
-                      <h3 className="font-bold mt-2 mb-2 line-clamp-2 group-hover:text-blue-500 transition-colors">
-                        {related.title}
-                      </h3>
-                      <p className="text-sm text-zinc-500 line-clamp-2">{related.excerpt}</p>
-                    </div>
-                  </article>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      <section className="py-20">
-        <div className="mx-auto max-w-3xl px-6">
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-blue-500/10 via-violet-500/10 to-cyan-500/10 p-10 md:p-12 backdrop-blur-xl text-center">
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-4">Need AI for your business?</h2>
-            <p className="text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">
-              Let's build a custom AI solution for your business. Free 15-min consultation.
+          <article className="post-body">
+            <p>
+              When TechStart came to us, their two-person support team was
+              answering the same handful of questions dozens of times a day —
+              password resets, billing cycles, plan differences — while genuinely
+              hard tickets sat in the queue for hours. This is the story of how
+              we built a chatbot that took over the repetitive 80% without making
+              the remaining 20% worse.
             </p>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-blue-500 via-violet-500 to-cyan-500 text-white font-semibold hover:shadow-2xl hover:shadow-blue-500/30 transition-all"
-            >
-              Get Free Consultation
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+
+            <h2 id="the-problem">The problem</h2>
+            <p>
+              TechStart&apos;s response time had crept past 12 hours during peak
+              periods. Not because their team was slow, but because roughly four
+              out of five incoming tickets were variations on the same dozen
+              questions. Every minute spent answering &quot;how do I reset my
+              password&quot; was a minute not spent on the customer with an actual
+              account issue.
+            </p>
+            <p>
+              The founder&apos;s instinct — add a chatbot — was right, but the
+              failure mode we see most often is a bot that answers confidently
+              and wrong, which erodes trust faster than a slow human ever would.
+              So the brief wasn&apos;t &quot;add AI.&quot; It was &quot;resolve the easy
+              stuff correctly, and know when to get out of the way.&quot;
+            </p>
+
+            <h2 id="our-approach">Our approach</h2>
+            <p>
+              We started with a week of read-only access to their help center and
+              the last six months of support tickets, categorizing every incoming
+              question by type and by how confidently a documented answer already
+              existed. That categorization became the actual product spec — it
+              told us exactly which 80% was safe to automate.
+            </p>
+
+            <div className="pull-quote">
+              The categorization exercise was the real work. The chatbot itself
+              took less time to build than deciding what it should be allowed to
+              answer.
+            </div>
+
+            <h2 id="training-the-model">Training the model</h2>
+            <p>
+              We built the assistant on GPT-4, grounded in TechStart&apos;s help
+              center content, product documentation, and a curated set of past
+              resolved tickets — not the raw ticket history, which included plenty
+              of dead ends and outdated answers. Feeding a model your worst
+              historical answers teaches it to repeat them.
+            </p>
+            <pre>{`// simplified retrieval step
+const context = await searchKnowledgeBase(userQuestion, { minConfidence: 0.78 });
+if (context.length === 0) return escalateToHuman(userQuestion);
+const answer = await generateAnswer(userQuestion, context);`}</pre>
+            <p>
+              Every answer is grounded in retrieved source material rather than
+              the model&apos;s general knowledge, and we log a confidence score
+              alongside every response so we can audit drift over time.
+            </p>
+
+            <h2 id="escalation-logic">Escalation logic</h2>
+            <p>
+              The most important part of the build wasn&apos;t the answers — it
+              was the exits. Any question below the confidence threshold,
+              anything touching billing disputes or account security, and
+              anything a customer explicitly asked to escalate goes straight to a
+              human, along with the full conversation so far. No one repeats
+              themselves.
+            </p>
+
+            <h2 id="results">Results</h2>
+            <p>
+              Within the first month, the bot was resolving 80% of incoming
+              queries without a human touching them. First response time for the
+              remaining 20% — the genuinely hard tickets — dropped to under 20
+              minutes, because the support team was no longer buried under
+              repetitive questions.
+            </p>
+            <p>
+              Customer satisfaction on bot-resolved tickets actually came in
+              slightly higher than the historical human-resolved average, largely
+              because the bot never made customers wait.
+            </p>
+
+            <h2 id="what-wed-do-differently">What we&apos;d do differently</h2>
+            <p>
+              We under-scoped the analytics dashboard in the first version, and
+              TechStart&apos;s team wanted visibility into which questions were
+              getting escalated most often — that data is genuinely useful for
+              deciding what to document better. We now build that dashboard in
+              from day one on every chatbot project.
+            </p>
+
+            <div className="share-row">
+              <a href="#" aria-label="Share on X">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18 2h3l-7.5 8.6L22 22h-6.9l-5.4-6.9L3.5 22H.5l8-9.2L2 2h7l4.9 6.3z" />
+                </svg>
+              </a>
+              <a href="#" aria-label="Share on LinkedIn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2 3.76-2 4 0 4.74 2.6 4.74 6v6.3h-4v-5.6c0-1.35-.02-3.1-1.9-3.1-1.9 0-2.2 1.48-2.2 3v5.7H9z" />
+                </svg>
+              </a>
+              <a href="#" aria-label="Copy link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.5 1.5" />
+                  <path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.5-1.5" />
+                </svg>
+              </a>
+            </div>
+
+            <div className="author-card">
+              <div className="avatar-ring" style={{ width: 52, height: 52 }}>
+                <span>{post.author.initials}</span>
+              </div>
+              <div>
+                <div style={{ fontWeight: 600 }}>{post.author.name}</div>
+                <div className="muted" style={{ fontSize: 13.5, marginTop: 4 }}>
+                  Founder, WebSwiftPro — builds web, AI, and automation products
+                  for growing businesses.
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div className="wrap">
+          <div className="section-head reveal" style={{ marginBottom: 0 }}>
+            <div className="eyebrow">Related reading</div>
+            <h2>More from the build log</h2>
+          </div>
+          <div className="post-grid" style={{ marginTop: 24 }}>
+            {related.map((r) => (
+              <Link
+                key={r.slug}
+                href={`/blog/${r.slug}`}
+                className="post-card reveal"
+              >
+                <div className="pc-media"></div>
+                <div className="pc-body">
+                  <span className="tag-pill">{r.category}</span>
+                  <h3>{r.title}</h3>
+                  <div className="post-meta">
+                    <span>{r.readTime}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
-    </article>
+
+      <section>
+        <div className="wrap">
+          <div className="newsletter-card reveal">
+            <div>
+              <h3 style={{ fontSize: 22 }}>
+                Get AI &amp; automation insights in your inbox
+              </h3>
+              <p className="muted" style={{ marginTop: 8, fontSize: 14.5 }}>
+                One email a month. No sales pitches, just what we&apos;re
+                learning.
+              </p>
+            </div>
+            <form>
+              <input
+                type="email"
+                placeholder="you@company.com"
+                required
+              />
+              <button type="submit" className="btn btn-primary">
+                Subscribe
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
